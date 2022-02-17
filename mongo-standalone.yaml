@@ -44,7 +44,7 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-  - port: 27027
+  - port: 27017
     targetPort: 27017
   
   selector:
