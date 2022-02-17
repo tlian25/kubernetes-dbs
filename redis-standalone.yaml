@@ -1,0 +1,52 @@
+# Standalone Redis to be run locally exposed through Loadbalancer Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-standalone
+  labels:
+    app: redis
+    tier: backend
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  
+  template:
+    metadata:
+      labels:
+        app: redis
+        tier: backend
+    
+    spec: 
+      containers:
+      - name: redis
+        image: redis
+        args: ["--save", "300", "1"]
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        ports:
+        - containerPort: 6379
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-standalone
+  labels:
+    app: redis
+    tier: backend
+
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 6380
+    targetPort: 6379
+  
+  selector:
+    app:  redis
+    tier: backend
